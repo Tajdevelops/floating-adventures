@@ -1,1 +1,47 @@
 @import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes heroTextEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-media-fade {
+  animation: heroMediaFade 650ms ease-in-out both;
+}
+
+@keyframes heroMediaFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hero-text-entrance {
+  animation: heroTextEntrance 850ms ease-out 120ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .hero-text-entrance {
+    animation: none;
+  }
+
+  .hero-media-fade {
+    animation: none;
+  }
+}
