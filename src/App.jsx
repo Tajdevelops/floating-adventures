@@ -2,6 +2,7 @@ import introHero from './assets/intro-hero.mp4';
 import charterCateringHero from './assets/charter-catering.jpg';
 import charterDinnerHero from './assets/charter-dinner.jpg';
 import waterActivitiesHero from './assets/water-activities.jpg';
+import offersBackgroundImage from './assets/main-offer-hero.jpg';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 // Shared section links for desktop side nav + mobile dropdown.
@@ -273,28 +274,28 @@ function Hero() {
       {/* Photo-only darkening overlay for stronger text contrast. */}
       <div
         className={`absolute inset-0 z-10 pointer-events-none bg-black transition-opacity duration-[900ms] ${
-          activeMedia.type === 'image' ? 'opacity-70' : 'opacity-0'
+          activeMedia.type === 'image' ? 'opacity-50' : 'opacity-0'
         }`}
       />
 
       {/* Hero headline, supporting copy, and CTA. */}
-      <div className="relative z-20 mx-auto flex min-h-[100svh] w-full max-w-6xl items-end min-[988px]:items-center [@media_(width:1024px)_and_(height:1366px)]:items-end px-4 sm:px-6 md:px-7 lg:px-9 pb-14 sm:pb-16 md:pb-20 min-[988px]:pb-0 [@media_(width:1024px)_and_(height:1366px)]:pb-20 [@media_(width:1024px)_and_(height:1366px)]:pl-[6.25rem]">
+      <div className="relative z-20 mx-auto flex min-h-[100svh] w-full max-w-6xl items-end min-[988px]:items-center [@media_(width:1024px)_and_(height:1366px)]:items-end px-4 sm:px-6 md:px-7 lg:px-9 pb-14 sm:pb-16 md:pb-20 min-[988px]:pb-0 [@media_(width:1024px)_and_(height:1366px)]:pb-20 [@media_(width:1024px)_and_(height:1366px)]:pl-[8rem]">
         <div className="max-w-[92vw] sm:max-w-xl text-left ml-0 lg:ml-[-90px] hero-text-entrance">
           <h1 className="mt-2 sm:mt-3 text-[2rem] sm:text-5xl lg:text-6xl leading-[1.05] sm:leading-tight font-bold text-white" style={{ fontFamily: 'Arial Black' }}>
             <span className="block text-[#eec07b]">Yacht Charters</span>
             <span className="block italic">in Sint Maarten</span>
           </h1>
-          <p className="mt-3 sm:mt-4 max-w-md text-[1.02rem] sm:text-lg leading-relaxed text-white/80">
+          <p className="mt-3 sm:mt-4 max-w-md text-[1.02rem] sm:text-lg leading-relaxed text-white/80 lg:text-2xl">
             Step aboard a private yacht and experience Sint Maarten like never before.
           </p>
 
-          <button className="mt-8 sm:mt-12 lg:mt-16 w-full sm:w-auto rounded-full bg-white px-7 sm:px-10 py-2.5 text-base sm:text-lg font-bold text-[#0f3360] hover:bg-[#0f3360] hover:text-[#eec07b] hover:py-3 hover:px-12 transition-all duration-200" style={{ fontFamily: 'Arial Black' }}>
+          <button className="mt-8 sm:mt-12 lg:mt-16 w-full sm:w-auto rounded-full bg-white px-7 sm:px-10 py-2.5 text-base sm:text-xl sm:py-5 [@media_(width:1024px)_and_(height:1366px)]:px-20 [@media_(width:1024px)_and_(height:1366px)]:py-7 [@media_(width:1024px)_and_(height:1366px)]:text-2xl font-bold text-[#0f3360] hover:bg-[#0f3360] hover:text-[#eec07b] hover:py-5 hover:px-12 transition-all duration-200" style={{ fontFamily: 'Arial Black' }}>
             Reserve Your Experience
           </button>
         </div>
       </div>
       {/* Social proof badge. */}
-      <div className="absolute inset-x-0 top-[6.5rem] sm:top-28 md:top-auto md:bottom-20 md:left-100 lg:bottom-20 lg: [@media_(width:1024px)_and_(height:1366px)_and_(hover:none)_and_(pointer:coarse)]:top-auto [@media_(width:1024px)_and_(height:1366px)_and_(hover:none)_and_(pointer:coarse)]:bottom-20 z-30 px-4 sm:px-6 md:px-8 lg:px-10 flex justify-center hero-text-entrance">
+      <div className="absolute inset-x-0 top-[6.5rem] sm:top-28 md:top-auto md:bottom-20 md:left-100 lg:bottom-10 lg:left-0 [@media_(width:1024px)_and_(height:1366px)_and_(hover:none)_and_(pointer:coarse)]:top-auto [@media_(width:1024px)_and_(height:1366px)_and_(hover:none)_and_(pointer:coarse)]:bottom-20 [@media_(width:1024px)_and_(height:1366px)_and_(hover:none)_and_(pointer:coarse)]:left-120 z-30 px-4 sm:px-6 md:px-8 lg:px-10 flex justify-center hero-text-entrance">
         <div className="rounded-2xl border border-[#eec07b]/70 bg-black/35 backdrop-blur-xl px-4 sm:px-5 py-3 sm:py-3.5">
           <div className="flex items-center justify-center gap-1.5" aria-label="5 star rating">
             {[...Array(5)].map((_, idx) => (
@@ -314,13 +315,51 @@ function Hero() {
 
 function SideNav() {
   // Desktop section progress/navigation rail.
-  const activeHref = '#home';
+  const [activeHref, setActiveHref] = useState('#home');
+
+  useEffect(() => {
+    const sectionElements = NAV_ITEMS
+      .map((item) => document.querySelector(item.href))
+      .filter(Boolean);
+
+    if (!sectionElements.length) {
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleEntries = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (!visibleEntries.length) {
+          return;
+        }
+
+        const bestMatch = visibleEntries[0];
+        if (bestMatch?.target?.id) {
+          setActiveHref(`#${bestMatch.target.id}`);
+        }
+      },
+      {
+        root: null,
+        rootMargin: '-30% 0px -40% 0px',
+        threshold: [0.2, 0.35, 0.5, 0.65, 0.8],
+      }
+    );
+
+    sectionElements.forEach((section) => observer.observe(section));
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   return (
-    <div className="hidden md:block fixed right-4 lg:right-8 xl:right-33 top-1/2 z-40 -translate-y-1/2 hero-text-entrance">
-      <div className="relative flex flex-col items-end gap-8 lg:gap-10 xl:gap-12">
+    <div className="hidden md:block fixed right-[max(env(safe-area-inset-right),2rem)] lg:right-11 xl:right-12 top-1/2 [@media_(hover:none)_and_(pointer:coarse)]:top-[50%] z-40 -translate-y-1/2 hero-text-entrance">
+      <div className="relative flex flex-col items-end gap-7 md:gap-20 lg:gap-30 xl:gap-12">
         {/* Vertical line (on the right) */}
-        <div className="absolute right-1 top-[14px] lg:top-[18px] h-[182px] lg:h-[212px] w-0.5 bg-white/50" />
+        <div className="absolute right-1 top-[12px] md:top-[14px] lg:top-[18px] h-[160px] md:h-[310px] lg:h-[220px] [@media_(width:1024px)_and_(height:1366px)]:h-[435px] w-0.5 bg-white/50" />
 
         {NAV_ITEMS.map((item) => {
           const isActive = item.href === activeHref;
@@ -329,14 +368,15 @@ function SideNav() {
             <a
               key={item.href}
               href={item.href}
-              className="relative flex items-center gap-4 lg:gap-5 xl:gap-6"
+              onClick={() => setActiveHref(item.href)}
+              className="relative flex items-center gap-3.5 md:gap-4 lg:gap-5 xl:gap-6"
             >
               {/* Label */}
               <span
                 className={
                   isActive
-                    ? 'text-[#eec07b] text-base lg:text-[1.08rem] font-semibold underline underline-offset-8'
-                    : 'text-white/90 text-base lg:text-[1.08rem]'
+                    ? 'text-[#eec07b] text-sm md:text-base lg:text-[1.08rem] font-semibold underline underline-offset-8'
+                    : 'text-white/90 text-sm md:text-base lg:text-[1.08rem]'
                 }
               >
                 {item.label}
@@ -345,8 +385,9 @@ function SideNav() {
               {/* Dot (aligned to the line) */}
               <span
                 className={
-                  'h-2.5 w-2.5 xl:h-3 xl:w-3 rounded-full bg-white ' +
-                  (isActive ? 'outline outline-2 outline-white/80 bg-[#eec07b]' : '')
+                  isActive
+                    ? 'h-2 w-2 md:h-2.5 md:w-2.5 xl:h-3 xl:w-3 rounded-full bg-[#eec07b] outline outline-2 outline-white/80'
+                    : 'h-2 w-2 md:h-2.5 md:w-2.5 xl:h-3 xl:w-3 rounded-full bg-white'
                 }
               />
             </a>
@@ -368,10 +409,104 @@ export default function App() {
       <Hero />
 
       {/* Main content sections */}
-      <section id="offers" className="min-h-screen bg-black text-white px-5 sm:px-7 md:px-8 lg:px-10 py-16 sm:py-20 md:py-24">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="text-3xl sm:text-4xl font-bold">Offers</h2>
-          <p className="mt-4 text-white/70">Placeholder section — we’ll build the cards next.</p>
+
+      {/* Offers page */}
+      <section id="offers" className="relative min-h-screen overflow-hidden text-white px-5 sm:px-7 md:px-8 lg:px-10 pt-14 sm:pt-20 md:pt-20 lg:pt-24 pb-44 sm:pb-52 md:pb-56">
+        <img
+          src={offersBackgroundImage}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-black/35" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-black/10" />
+
+        <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-between">
+          <div className="max-w-2xl">
+            <p className="text-xl sm:text-2xl md:text-3xl text-[#eec07b]" style={{ fontFamily: 'cursive' }}>
+              The Ultimate
+            </p>
+            <h2 className="mt-1 text-3xl sm:text-4xl md:text-5xl leading-[0.98] font-semibold" style={{ fontFamily: 'Times New Roman, serif' }}>
+              Sint Maarten
+              <span className="block">Private Charter</span>
+            </h2>
+            <p className="mt-4 max-w-xl text-sm sm:text-base md:text-lg text-white/90">
+              A full-day luxury yacht experience designed for comfort, privacy, and unforgettable moments.
+            </p>
+
+            <div className="mt-6 sm:mt-7 flex flex-wrap items-center gap-3 sm:gap-4">
+              <button className="rounded-full bg-[#eec07b] px-6 sm:px-8 py-2.5 sm:py-3 text-base sm:text-lg font-bold text-black transition hover:brightness-105">
+                Reserve Your Experience
+              </button>
+              <a href="#" className="text-lg sm:text-xl font-semibold text-white/95 underline underline-offset-6 decoration-white/45">
+                View Full Details
+              </a>
+            </div>
+          </div>
+
+          <div className="pb-8 sm:pb-10 md:pb-12">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+              {[
+                'Premium Open Bar',
+                'Gourmet Dining',
+                'Water Activities',
+                'Starlink Wi-Fi',
+                'Fully Private',
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="rounded-2xl border border-white/25 bg-[#0d2236]/70 px-4 py-3 text-center text-sm sm:text-base font-semibold text-white/95 backdrop-blur-sm shadow-[inset_0_-1px_0_0_rgba(238,192,123,0.35)]"
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 grid gap-4 lg:grid-cols-[1.2fr_1.5fr_1fr] items-stretch">
+              <div className="rounded-2xl border border-white/20 bg-[#0a1827]/70 p-5 backdrop-blur-sm">
+                <h3 className="text-3xl sm:text-4xl text-white leading-none" style={{ fontFamily: 'cursive' }}>
+                  What&apos;s <span className="text-[#eec07b]" style={{ fontFamily: 'Times New Roman, serif' }}>Included</span>
+                </h3>
+                <ul className="mt-4 space-y-2.5 text-base sm:text-xl text-white/90">
+                  {[
+                    'Snorkeling & Paddleboard',
+                    'Fresh Gourmet Lunch',
+                    'Organic Local Ingredients',
+                    'Towels & Premium Service',
+                  ].map((line) => (
+                    <li key={line} className="flex items-center justify-between gap-3">
+                      <span>{line}</span>
+                      <span className="text-[#eec07b] text-xl">✓</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { src: waterActivitiesHero, alt: 'Water activity cove view' },
+                  { src: charterDinnerHero, alt: 'Gourmet dining' },
+                  { src: charterCateringHero, alt: 'Paddleboard activity' },
+                ].map((card) => (
+                  <div key={card.alt} className="overflow-hidden rounded-2xl border border-white/20 bg-black/40">
+                    <img src={card.src} alt={card.alt} className="h-full w-full object-cover" />
+                  </div>
+                ))}
+              </div>
+
+              <div className="rounded-2xl border border-white/20 bg-[#0a1827]/75 p-5 backdrop-blur-sm flex flex-col justify-between">
+                <div>
+                  <h3 className="text-3xl sm:text-4xl leading-tight text-white" style={{ fontFamily: 'Times New Roman, serif' }}>
+                    Ready to <span className="text-[#eec07b]" style={{ fontFamily: 'cursive' }}>Set Sail?</span>
+                  </h3>
+                  <p className="mt-2 text-xl tracking-[0.08em] text-white/85">LIMITED AVAILABILITY</p>
+                </div>
+                <button className="mt-5 rounded-full bg-white px-6 py-3 text-lg font-bold text-black hover:bg-white/90 transition">
+                  CHECK AVAILABILITY
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
