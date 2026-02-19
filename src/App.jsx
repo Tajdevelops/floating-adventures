@@ -36,6 +36,14 @@ const HERO_MEDIA = [
   },
 ];
 
+const GALLERY_ITEMS = [
+  { src: offersBackgroundImage, alt: 'Yacht at sunset in Sint Maarten' },
+  { src: charterDinnerHero, alt: 'Gourmet dining onboard' },
+  { src: waterActivitiesHero, alt: 'Guests enjoying water activities' },
+  { src: introHero, alt: 'Hero video preview frame', type: 'video' },
+  { src: charterCateringHero, alt: 'Premium charter catering' },
+];
+
 const PHOTO_DISPLAY_MS = 7000;
 const VIDEO_TO_PHOTO_DELAY_MS = 1000; // Delay after video ends before showing next photo
 const CROSSFADE_MS = 900;
@@ -281,7 +289,7 @@ function Hero() {
       {/* Hero headline, supporting copy, and CTA. */}
       <div className="relative z-20 mx-auto flex min-h-[100svh] w-full max-w-6xl items-end min-[988px]:items-center [@media_(width:1024px)_and_(height:1366px)]:items-end px-4 sm:px-6 md:px-7 lg:px-9 pb-14 sm:pb-16 md:pb-20 min-[988px]:pb-0 [@media_(width:1024px)_and_(height:1366px)]:pb-20 [@media_(width:1024px)_and_(height:1366px)]:pl-[8rem]">
         <div className="max-w-[92vw] sm:max-w-xl text-left ml-0 lg:ml-[-90px] hero-text-entrance">
-          <h1 className="mt-2 sm:mt-3 text-[2rem] sm:text-5xl lg:text-6xl leading-[1.05] sm:leading-tight font-bold text-white" style={{ fontFamily: 'Arial Black' }}>
+          <h1 className="mt-2 sm:mt-3 text-[2rem] sm:text-5xl lg:text-6xl leading-[1.05] sm:leading-tight font-bold text-white" style={{ fontFamily: 'Times New Roman, serif' }}>
             <span className="block text-[#eec07b]">Yacht Charters</span>
             <span className="block italic">in Sint Maarten</span>
           </h1>
@@ -326,32 +334,26 @@ function SideNav() {
       return undefined;
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntries = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+    const updateActiveSection = () => {
+      const scrollMarker = window.scrollY + window.innerHeight * 0.4;
+      let currentHref = NAV_ITEMS[0].href;
 
-        if (!visibleEntries.length) {
-          return;
+      sectionElements.forEach((section) => {
+        if (section.offsetTop <= scrollMarker) {
+          currentHref = `#${section.id}`;
         }
+      });
 
-        const bestMatch = visibleEntries[0];
-        if (bestMatch?.target?.id) {
-          setActiveHref(`#${bestMatch.target.id}`);
-        }
-      },
-      {
-        root: null,
-        rootMargin: '-30% 0px -40% 0px',
-        threshold: [0.2, 0.35, 0.5, 0.65, 0.8],
-      }
-    );
+      setActiveHref(currentHref);
+    };
 
-    sectionElements.forEach((section) => observer.observe(section));
+    updateActiveSection();
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
+    window.addEventListener('resize', updateActiveSection);
 
     return () => {
-      observer.disconnect();
+      window.removeEventListener('scroll', updateActiveSection);
+      window.removeEventListener('resize', updateActiveSection);
     };
   }, []);
 
@@ -399,6 +401,19 @@ function SideNav() {
 }
 
 export default function App() {
+  // Gallery carousel state.
+  const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
+  const activeGalleryItem = GALLERY_ITEMS[activeGalleryIndex];
+
+  // Gallery navigation handlers.
+  const showPreviousGalleryItem = () => {
+    setActiveGalleryIndex((prev) => (prev - 1 + GALLERY_ITEMS.length) % GALLERY_ITEMS.length);
+  };
+
+  const showNextGalleryItem = () => {
+    setActiveGalleryIndex((prev) => (prev + 1) % GALLERY_ITEMS.length);
+  };
+
   return (
     <div className="pt-0">
       {/* Fixed navigation layers */}
@@ -407,22 +422,28 @@ export default function App() {
 
       {/* Hero media + primary messaging */}
       <Hero />
+      {/* Section divider: Home -> Offers */}
+      <div className="h-4 w-full bg-[#eec07b]" aria-hidden="true" />
 
       {/* Main content sections */}
 
       {/* Offers page */}
-      <section id="offers" className="relative min-h-screen overflow-hidden text-white px-5 sm:px-7 md:px-8 lg:px-10 pt-14 sm:pt-20 md:pt-20 lg:pt-24 pb-44 sm:pb-52 md:pb-56">
+      <section id="offers" className="relative min-h-screen overflow-hidden text-white px-5 sm:px-7 md:px-8 lg:px-10 pt-14 sm:pt-20 md:pt-20 lg:pt-24 xl:pt-28 pb-24 sm:pb-28 md:pb-32 lg:pb-36 xl:pb-40">
+        {/* Offers background image */}
         <img
           src={offersBackgroundImage}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
+        {/* Readability overlays */}
         <div className="absolute inset-0 bg-black/35" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-black/10" />
 
+        {/* Offers content wrapper */}
         <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-between">
-          <div className="max-w-2xl">
+          {/* Top intro copy + primary CTA */}
+          <div className="max-w-2xl lg:mt-4">
             <p className="text-xl sm:text-2xl md:text-3xl text-[#eec07b]" style={{ fontFamily: 'cursive' }}>
               The Ultimate
             </p>
@@ -444,8 +465,10 @@ export default function App() {
             </div>
           </div>
 
-          <div className="pb-8 sm:pb-10 md:pb-12">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {/* Bottom composition: feature chips + details grid + secondary CTA */}
+          <div className="pb-6 sm:pb-8 md:pb-10 lg:pb-12 xl:pb-14 lg:mt-8 xl:mt-10">
+            {/* Feature chip row */}
+            <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               {[
                 'Premium Open Bar',
                 'Gourmet Dining',
@@ -462,7 +485,9 @@ export default function App() {
               ))}
             </div>
 
-            <div className="mt-4 grid gap-4 lg:grid-cols-[1.2fr_1.5fr_1fr] items-stretch">
+            {/* Three-column lower layout */}
+            <div className="mt-8 grid gap-4 lg:grid-cols-[1.2fr_1.5fr_1fr] items-stretch">
+              {/* Included list card */}
               <div className="rounded-2xl border border-white/20 bg-[#0a1827]/70 p-5 backdrop-blur-sm">
                 <h3 className="text-3xl sm:text-4xl text-white leading-none" style={{ fontFamily: 'cursive' }}>
                   What&apos;s <span className="text-[#eec07b]" style={{ fontFamily: 'Times New Roman, serif' }}>Included</span>
@@ -482,6 +507,7 @@ export default function App() {
                 </ul>
               </div>
 
+              {/* Supporting media cards */}
               <div className="grid grid-cols-3 gap-3">
                 {[
                   { src: waterActivitiesHero, alt: 'Water activity cove view' },
@@ -494,6 +520,7 @@ export default function App() {
                 ))}
               </div>
 
+              {/* Right-side availability CTA card */}
               <div className="rounded-2xl border border-white/20 bg-[#0a1827]/75 p-5 backdrop-blur-sm flex flex-col justify-between">
                 <div>
                   <h3 className="text-3xl sm:text-4xl leading-tight text-white" style={{ fontFamily: 'Times New Roman, serif' }}>
@@ -506,23 +533,233 @@ export default function App() {
                 </button>
               </div>
             </div>
+
+            {/* Secondary section CTA */}
+            <div className="mt-10 flex justify-center">
+              <button className="rounded-full border border-[#eec07b]/70 bg-black/35 px-7 sm:px-9 py-2.5 sm:py-3 text-base sm:text-lg font-semibold text-white hover:bg-[#eec07b] hover:text-black transition">
+                More Offers
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* Section divider: Offers -> Gallery */}
+      <div className="h-4 w-full bg-[#eec07b]" aria-hidden="true" />
+
+      {/* Gallery page */}
+      <section id="gallery" className="relative min-h-screen overflow-hidden bg-[#020914] text-white px-5 sm:px-7 md:px-8 lg:px-10 py-16 sm:py-20 md:py-24">
+        {/* Background glow treatment */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,rgba(14,69,109,0.45),transparent_45%),radial-gradient(circle_at_20%_90%,rgba(238,192,123,0.18),transparent_35%)]" />
+
+        {/* Framed gallery shell */}
+        <div className="relative z-10 mx-auto max-w-7xl rounded-3xl border border-[#eec07b]/30 bg-[#031121]/65 p-5 sm:p-7 md:p-10 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_30px_80px_rgba(0,0,0,0.5)] backdrop-blur-sm">
+          {/* Gallery title block */}
+          <div className="text-center">
+            <p className="text-lg sm:text-2xl text-white/70 tracking-[0.18em]">- Gallery -</p>
+            <h2 className="mt-2 text-3xl sm:text-5xl md:text-6xl leading-tight" style={{ fontFamily: 'Times New Roman, serif' }}>
+              Capture a <span className="text-[#eec07b]">Day in Luxury</span>
+            </h2>
+            <p className="mt-4 text-base sm:text-xl text-white/80">
+              Experience the best of yacht life, from gourmet dining to tropical escapes.
+            </p>
+          </div>
+
+          {/* Active gallery item (image/video) */}
+          <div className="mt-8 overflow-hidden rounded-2xl border border-[#eec07b]/35 bg-black/30">
+            {activeGalleryItem.type === 'video' ? (
+              <video
+                key={`gallery-video-${activeGalleryIndex}`}
+                src={activeGalleryItem.src}
+                className="h-[250px] sm:h-[380px] md:h-[520px] w-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+              />
+            ) : (
+              <img
+                key={`gallery-image-${activeGalleryIndex}`}
+                src={activeGalleryItem.src}
+                alt={activeGalleryItem.alt}
+                className="h-[250px] sm:h-[380px] md:h-[520px] w-full object-cover"
+              />
+            )}
+          </div>
+
+          {/* Thumbnail rail + previous/next controls */}
+          <div className="mt-5 flex items-center gap-3">
+            <button
+              type="button"
+              onClick={showPreviousGalleryItem}
+              className="shrink-0 rounded-full border border-[#eec07b]/55 bg-black/40 p-2.5 text-[#eec07b] hover:bg-[#eec07b] hover:text-black transition"
+              aria-label="Show previous gallery image"
+            >
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+
+            <div className="grid flex-1 grid-cols-2 sm:grid-cols-5 gap-3">
+              {GALLERY_ITEMS.map((item, index) => {
+                const isActive = index === activeGalleryIndex;
+                return (
+                  <button
+                    key={`${item.alt}-${index}`}
+                    type="button"
+                    onClick={() => setActiveGalleryIndex(index)}
+                    className={
+                      'overflow-hidden rounded-xl border bg-black/30 transition ' +
+                      (isActive
+                        ? 'border-[#eec07b] ring-2 ring-[#eec07b]/60'
+                        : 'border-white/20 hover:border-[#eec07b]/60')
+                    }
+                    aria-label={`Show gallery item ${index + 1}`}
+                  >
+                    {item.type === 'video' ? (
+                      <video src={item.src} className="h-20 sm:h-24 md:h-28 w-full object-cover" muted playsInline />
+                    ) : (
+                      <img src={item.src} alt={item.alt} className="h-20 sm:h-24 md:h-28 w-full object-cover" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              type="button"
+              onClick={showNextGalleryItem}
+              className="shrink-0 rounded-full border border-[#eec07b]/55 bg-black/40 p-2.5 text-[#eec07b] hover:bg-[#eec07b] hover:text-black transition"
+              aria-label="Show next gallery image"
+            >
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
           </div>
         </div>
       </section>
 
-      <section id="gallery" className="min-h-screen bg-black text-white px-5 sm:px-7 md:px-8 lg:px-10 py-16 sm:py-20 md:py-24">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="text-3xl sm:text-4xl font-bold">Gallery</h2>
-          <p className="mt-4 text-white/70">Placeholder section — we’ll add images + lightbox later.</p>
+      <section id="about" className="relative min-h-screen overflow-hidden bg-[#030a15] text-white px-5 sm:px-7 md:px-8 lg:px-10 py-16 sm:py-20 md:py-24">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_80%,rgba(238,192,123,0.2),transparent_30%),radial-gradient(circle_at_60%_25%,rgba(18,71,112,0.35),transparent_45%)]" />
+
+        <div className="relative z-10 mx-auto max-w-7xl rounded-3xl border border-[#eec07b]/25 bg-[#051224]/70 p-5 sm:p-7 md:p-8 lg:p-10 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_30px_80px_rgba(0,0,0,0.55)] backdrop-blur-sm">
+          <div className="mb-5 text-center text-[#eec07b] tracking-[0.18em] text-lg sm:text-xl">
+            - About Us -
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-[1fr_1.25fr]">
+            <div className="rounded-2xl border border-white/15 bg-black/20 p-5 sm:p-6">
+              <h2 className="text-4xl sm:text-5xl leading-none text-white" style={{ fontFamily: 'Times New Roman, serif' }}>
+                Floating <span className="text-[#eec07b]" style={{ fontFamily: 'cursive' }}>Adventures</span>
+              </h2>
+
+              <p className="mt-5 text-lg sm:text-2xl leading-relaxed text-white/90">
+                We are a <span className="text-[#eec07b]">family-owned</span> company built from a passion for exceptional Caribbean escapes.
+              </p>
+              <p className="mt-4 text-base sm:text-xl leading-relaxed text-white/85">
+                From Bobby&apos;s Marina in Sint Maarten, our private charters deliver hidden bays, clear waters, and unforgettable moments designed for comfort and privacy.
+              </p>
+              <p className="mt-4 text-base sm:text-xl leading-relaxed text-white/85">
+                Every itinerary is curated for effortless luxury, personal space, and authentic island adventure.
+              </p>
+
+              <p className="mt-6 text-2xl sm:text-3xl text-white leading-snug" style={{ fontFamily: 'Times New Roman, serif' }}>
+                Casual Elegance <span className="text-[#eec07b]">&amp;</span> Privacy on Caribbean Waters.
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:gap-4 grid-rows-[1.1fr_0.9fr]">
+              <div className="overflow-hidden rounded-2xl border border-white/20 bg-black/25">
+                <img src={offersBackgroundImage} alt="Yacht cruising in Sint Maarten at sunset" className="h-full w-full object-cover" />
+              </div>
+
+              <div className="rounded-2xl border border-white/20 bg-[#061426]/80 p-4 sm:p-5">
+                <div className="h-full rounded-xl border border-[#eec07b]/30 bg-[radial-gradient(circle_at_40%_50%,rgba(238,192,123,0.22),transparent_35%),radial-gradient(circle_at_60%_60%,rgba(20,88,132,0.35),transparent_40%)] p-4 sm:p-5 flex flex-col justify-between">
+                  <div className="relative h-36 sm:h-40 w-full rounded-lg border border-white/15 bg-black/25">
+                    <span className="absolute left-[22%] top-[30%] h-4 w-4 rounded-full bg-[#eec07b] ring-4 ring-[#eec07b]/30" />
+                    <span className="absolute left-[58%] top-[58%] h-4 w-4 rounded-full bg-[#eec07b] ring-4 ring-[#eec07b]/30" />
+                    <p className="absolute left-[16%] top-[15%] text-sm sm:text-base text-white/90">Simpson Bay</p>
+                    <p className="absolute left-[52%] top-[68%] text-2xl sm:text-4xl text-white" style={{ fontFamily: 'Times New Roman, serif' }}>
+                      Sint Maarten
+                    </p>
+                  </div>
+
+                  <p className="mt-3 text-right text-xl sm:text-3xl text-[#eec07b]" style={{ fontFamily: 'cursive' }}>
+                    Located at Bobby&apos;s Marina
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="relative -rotate-2 rounded-md border border-[#eec07b]/45 bg-white text-black p-2 shadow-lg">
+              <img src={charterCateringHero} alt="Family on board welcome moment" className="h-32 sm:h-36 w-full rounded-sm object-cover" />
+              <p className="mt-1 text-center text-sm sm:text-base italic" style={{ fontFamily: 'Times New Roman, serif' }}>Welcome Aboard</p>
+            </div>
+
+            {[charterDinnerHero, waterActivitiesHero, offersBackgroundImage].map((src, idx) => (
+              <div key={idx} className="overflow-hidden rounded-xl border border-white/20 bg-black/35">
+                <img src={src} alt="About section moment" className="h-36 sm:h-44 w-full object-cover" />
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 text-center">
+            <h3 className="text-3xl sm:text-5xl leading-tight" style={{ fontFamily: 'Times New Roman, serif' }}>
+              Floating <span className="text-[#eec07b]">Adventures</span> is not just about chartering.
+            </h3>
+            <p className="mt-3 text-lg sm:text-2xl text-white/85">
+              This is your personal Caribbean adventure, full of space, freedom, and carefree relaxation.
+            </p>
+          </div>
         </div>
       </section>
 
-      <section id="about" className="min-h-screen bg-black text-white px-5 sm:px-7 md:px-8 lg:px-10 py-16 sm:py-20 md:py-24">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="text-3xl sm:text-4xl font-bold">About</h2>
-          <p className="mt-4 text-white/70">Placeholder section — we’ll write the brand story here.</p>
+      {/* Footer */}
+      <footer className="relative overflow-hidden border-t border-[#eec07b]/30 bg-[#020a14] text-white px-5 sm:px-7 md:px-8 lg:px-10 py-10 sm:py-12">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_20%,rgba(238,192,123,0.12),transparent_30%),radial-gradient(circle_at_80%_80%,rgba(16,78,120,0.25),transparent_45%)]" />
+
+        <div className="relative z-10 mx-auto max-w-7xl">
+          <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+            <div>
+              <h3 className="text-3xl sm:text-4xl leading-none" style={{ fontFamily: 'Times New Roman, serif' }}>
+                Floating <span className="text-[#eec07b]" style={{ fontFamily: 'cursive' }}>Adventures</span>
+              </h3>
+              <p className="mt-3 max-w-md text-white/80">
+                Private yacht charters in Sint Maarten curated for comfort, privacy, and unforgettable moments.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-8 sm:gap-12">
+              <div>
+                <p className="text-sm tracking-[0.12em] text-[#eec07b] uppercase">Navigate</p>
+                <div className="mt-3 flex flex-col gap-2 text-white/90">
+                  <a href="#home" className="hover:text-[#eec07b] transition">Home</a>
+                  <a href="#offers" className="hover:text-[#eec07b] transition">Offers</a>
+                  <a href="#gallery" className="hover:text-[#eec07b] transition">Gallery</a>
+                  <a href="#about" className="hover:text-[#eec07b] transition">About</a>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-sm tracking-[0.12em] text-[#eec07b] uppercase">Connect</p>
+                <div className="mt-3 flex flex-col gap-2 text-white/90">
+                  <a href="#" className="hover:text-[#eec07b] transition">Instagram</a>
+                  <a href="#" className="hover:text-[#eec07b] transition">Facebook</a>
+                  <a href="#" className="hover:text-[#eec07b] transition">Email Us</a>
+                  <a href="#" className="hover:text-[#eec07b] transition">Reserve Now</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 border-t border-white/15 pt-5 text-sm text-white/65 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <p>© {new Date().getFullYear()} Floating Adventures. All rights reserved.</p>
+            <p>Designed for Caribbean Luxury Charters</p>
+          </div>
         </div>
-      </section>
+      </footer>
     </div>
   );
 }
