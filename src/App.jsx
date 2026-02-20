@@ -536,9 +536,12 @@ export default function App() {
 
             {/* Secondary section CTA */}
             <div className="mt-10 flex justify-center">
-              <button className="rounded-full border border-[#eec07b]/70 bg-black/35 px-7 sm:px-9 py-2.5 sm:py-3 text-base sm:text-lg font-semibold text-white hover:bg-[#eec07b] hover:text-black transition">
+              <a
+                href="/offer-page.html"
+                className="rounded-full border border-[#eec07b]/70 bg-black/35 px-7 sm:px-9 py-2.5 sm:py-3 text-base sm:text-lg font-semibold text-white hover:bg-[#eec07b] hover:text-black transition"
+              >
                 More Offers
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -638,6 +641,7 @@ export default function App() {
           </div>
         </div>
       </section>
+      <div className="h-4 w-full bg-[#eec07b]" aria-hidden="true" />
 
       <section id="about" className="relative min-h-screen overflow-hidden bg-[#030a15] text-white px-5 sm:px-7 md:px-8 lg:px-10 py-16 sm:py-20 md:py-24">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_80%,rgba(238,192,123,0.2),transparent_30%),radial-gradient(circle_at_60%_25%,rgba(18,71,112,0.35),transparent_45%)]" />
@@ -675,13 +679,17 @@ export default function App() {
 
               <div className="rounded-2xl border border-white/20 bg-[#061426]/80 p-4 sm:p-5">
                 <div className="h-full rounded-xl border border-[#eec07b]/30 bg-[radial-gradient(circle_at_40%_50%,rgba(238,192,123,0.22),transparent_35%),radial-gradient(circle_at_60%_60%,rgba(20,88,132,0.35),transparent_40%)] p-4 sm:p-5 flex flex-col justify-between">
-                  <div className="relative h-36 sm:h-40 w-full rounded-lg border border-white/15 bg-black/25">
-                    <span className="absolute left-[22%] top-[30%] h-4 w-4 rounded-full bg-[#eec07b] ring-4 ring-[#eec07b]/30" />
-                    <span className="absolute left-[58%] top-[58%] h-4 w-4 rounded-full bg-[#eec07b] ring-4 ring-[#eec07b]/30" />
-                    <p className="absolute left-[16%] top-[15%] text-sm sm:text-base text-white/90">Simpson Bay</p>
-                    <p className="absolute left-[52%] top-[68%] text-2xl sm:text-4xl text-white" style={{ fontFamily: 'Times New Roman, serif' }}>
-                      Sint Maarten
-                    </p>
+                  <div className="h-36 sm:h-40 w-full overflow-hidden rounded-lg border border-white/15 bg-black/25">
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7509.9825227377905!2d-63.0448645546064!3d18.02010680303474!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8c0e6f00675acbd3%3A0xd782f938e83b74b8!2sFloating%20Adventures%20B.V!5e1!3m2!1spl!2snl!4v1764778875337!5m2!1spl!2snl"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="Floating Adventures Location"
+                    />
                   </div>
 
                   <p className="mt-3 text-right text-xl sm:text-3xl text-[#eec07b]" style={{ fontFamily: 'cursive' }}>
@@ -756,7 +764,13 @@ export default function App() {
 
           <div className="mt-8 border-t border-white/15 pt-5 text-sm text-white/65 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p>© {new Date().getFullYear()} Floating Adventures. All rights reserved.</p>
-            <p>Designed for Caribbean Luxury Charters</p>
+            <div className="flex items-center gap-4">
+              <a href="/policy.html" className="hover:text-[#eec07b] transition">Privacy Policy</a>
+              <span className="text-white/30">|</span>
+              <a href="/charter-regulations.html" className="hover:text-[#eec07b] transition">Charter Regulations</a>
+              <span className="text-white/30">|</span>
+              <p>Designed for Caribbean Luxury Charters</p>
+            </div>
           </div>
         </div>
       </footer>

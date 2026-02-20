@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Offers | Floating Adventures</title>
+    <style>
+      :root {
+        --gold: #eec07b;
+        --ink: #020a14;
+        --text: #f3f5fb;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        color: var(--text);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background:
+          radial-gradient(circle at 15% 20%, rgba(238, 192, 123, 0.18), transparent 25%),
+          radial-gradient(circle at 80% 72%, rgba(16, 78, 120, 0.35), transparent 42%),
+          var(--ink);
+      }
+
+      .wrap {
+        width: min(1320px, 94vw);
+        margin: 38px auto 60px;
+        border: 1px solid rgba(238, 192, 123, 0.28);
+        border-radius: 22px;
+        background: rgba(5, 17, 33, 0.72);
+        box-shadow: 0 30px 85px rgba(0, 0, 0, 0.6);
+        padding: 30px;
+        backdrop-filter: blur(6px);
+      }
+
+      .top { text-align: center; }
+      .eyebrow {
+        color: var(--gold);
+        letter-spacing: 0.12em;
+        font-size: 1.1rem;
+      }
+
+      h1 {
+        margin: 10px 0 0;
+        font-size: clamp(2rem, 5vw, 4.1rem);
+        font-family: "Times New Roman", Times, serif;
+        font-weight: 500;
+      }
+
+      .sub {
+        margin-top: 14px;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: clamp(1rem, 2.3vw, 1.9rem);
+      }
+
+      .cards {
+        margin-top: 28px;
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+
+      .card {
+        border: 1px solid rgba(238, 192, 123, 0.35);
+        border-radius: 16px;
+        overflow: hidden;
+        background: rgba(8, 20, 36, 0.76);
+        transition: 220ms ease;
+      }
+
+      .card.expanded {
+        grid-column: span 2;
+        border-color: rgba(238, 192, 123, 0.75);
+        box-shadow: 0 0 0 1px rgba(238, 192, 123, 0.4), 0 16px 36px rgba(0, 0, 0, 0.45);
+      }
+
+      .card img {
+        width: 100%;
+        height: 170px;
+        object-fit: cover;
+        display: block;
+      }
+
+      .card-body { padding: 16px; }
+      .card h2 {
+        margin: 0;
+        font-family: "Times New Roman", Times, serif;
+        font-size: 2rem;
+        font-weight: 500;
+        line-height: 1.05;
+      }
+
+      .card h2 span { color: var(--gold); }
+
+      .meta {
+        margin-top: 8px;
+        color: rgba(255, 255, 255, 0.86);
+      }
+
+      .features {
+        margin: 12px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .features li {
+        margin: 8px 0;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .features li::before {
+        content: "✓";
+        color: var(--gold);
+        margin-right: 10px;
+      }
+
+      .card-details {
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 260ms ease, opacity 180ms ease, margin-top 180ms ease;
+        margin-top: 0;
+      }
+
+      .card.expanded .card-details {
+        max-height: 1200px;
+        opacity: 1;
+        margin-top: 12px;
+      }
+
+      .card-details p {
+        margin: 0 0 10px;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .card-details ul {
+        margin: 6px 0 0;
+        padding-left: 20px;
+      }
+
+      .card-details li {
+        margin: 5px 0;
+        line-height: 1.55;
+        color: rgba(255, 255, 255, 0.92);
+      }
+
+      .cta-row {
+        margin-top: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .btn {
+        border: 1px solid rgba(238, 192, 123, 0.7);
+        border-radius: 999px;
+        text-align: center;
+        padding: 11px 16px;
+        text-decoration: none;
+        color: #111;
+        background: var(--gold);
+        font-weight: 700;
+      }
+
+      .ghost {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font: inherit;
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.9);
+        text-align: center;
+      }
+
+      .lower {
+        margin-top: 20px;
+        display: grid;
+        gap: 14px;
+        grid-template-columns: 1.2fr 2.4fr;
+      }
+
+      .panel {
+        border: 1px solid rgba(238, 192, 123, 0.28);
+        border-radius: 14px;
+        background: rgba(8, 20, 36, 0.72);
+        padding: 16px;
+      }
+
+      .panel h3 {
+        margin: 0;
+        font-family: "Times New Roman", Times, serif;
+        font-size: 2rem;
+        font-weight: 500;
+      }
+
+      .panel h3 span { color: var(--gold); }
+
+      .two-col {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 16px;
+      }
+
+      .two-col div::before {
+        content: "✓";
+        color: var(--gold);
+        margin-right: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        color: rgba(255, 255, 255, 0.92);
+      }
+
+      th, td {
+        text-align: center;
+        padding: 12px 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      }
+
+      th:first-child,
+      td:first-child { text-align: left; }
+
+      .yes {
+        color: var(--gold);
+        font-weight: 700;
+      }
+
+      .back {
+        display: inline-block;
+        margin-top: 18px;
+        padding: 10px 16px;
+        border-radius: 999px;
+        border: 1px solid rgba(238, 192, 123, 0.6);
+        color: var(--text);
+        text-decoration: none;
+      }
+
+      .back:hover {
+        background: var(--gold);
+        color: #101010;
+      }
+
+      @media (max-width: 1120px) {
+        .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .card.expanded { grid-column: span 2; }
+        .lower { grid-template-columns: 1fr; }
+      }
+
+      @media (max-width: 680px) {
+        .wrap {
+          padding: 18px;
+          margin-top: 22px;
+        }
+        .cards { grid-template-columns: 1fr; }
+        .card.expanded { grid-column: span 1; }
+        .card h2 { font-size: 1.8rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <div class="top">
+        <p class="eyebrow">- Offers -</p>
+        <h1>Choose Your Charter</h1>
+        <p class="sub">Private experiences designed for comfort, privacy, and unforgettable moments.</p>
+      </div>
+
+      <section class="cards" id="offers-cards">
+        <article class="card" id="full-day">
+          <img src="/offers-assets/main-offer-hero.jpg" alt="Full-day private charter" />
+          <div class="card-body">
+            <h2>Full-Day Private <span>Charter</span></h2>
+            <p class="meta">Duration: ~7 hours • Vessel: Sessa C38 "Gama 3"</p>
+            <ul class="features">
+              <li>Premium open bar and curated dining</li>
+              <li>Snorkeling, paddleboard and water toys</li>
+              <li>Secluded bays and hidden beaches</li>
+              <li>Starlink Wi-Fi and premium onboard comfort</li>
+            </ul>
+            <div class="cta-row">
+              <a class="btn" href="#">Book Now</a>
+              <button class="ghost view-details" type="button">View Details ▾</button>
+            </div>
+            <div class="card-details">
+              <p>The signature Floating Adventures experience. A full-day private charter designed for guests seeking privacy, comfort, and unforgettable Caribbean moments.</p>
+              <ul>
+                <li>Premium open bar with cocktails, wines, prosecco, Caribbean spirits, juices and soft drinks</li>
+                <li>Gourmet culinary experience with fresh local and organic ingredients</li>
+                <li>Onboard grill featuring seafood, meats and seasonal selections</li>
+                <li>Snorkeling gear, paddleboard (SUP), floating mat and water accessories</li>
+                <li>Visits to secluded beaches and hidden bays inaccessible to large vessels</li>
+                <li>Premium towels, sunscreen and onboard comfort items</li>
+                <li>Starlink Wi‑Fi onboard and fully tailored itinerary options</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="half-day">
+          <img src="/offers-assets/hero-image.jpg" alt="Half-day private cruise" />
+          <div class="card-body">
+            <h2>Half-Day Private <span>Cruise</span></h2>
+            <p class="meta">Duration: ~4 hours • Vessel: Sessa C38 "Gama 3"</p>
+            <ul class="features">
+              <li>Premium drinks and refreshments</li>
+              <li>Swimming and snorkeling stops</li>
+              <li>Comfort-focused private route</li>
+              <li>Professional captain and crew</li>
+            </ul>
+            <div class="cta-row">
+              <a class="btn" href="#">Book Now</a>
+              <button class="ghost view-details" type="button">View Details ▾</button>
+            </div>
+            <div class="card-details">
+              <p>A condensed luxury yacht experience ideal for guests wanting a premium Caribbean escape without committing to a full day.</p>
+              <ul>
+                <li>Premium drinks and refreshments</li>
+                <li>Swimming and snorkeling stops</li>
+                <li>Water activities and relaxation time</li>
+                <li>Tailored cruising route based on weather and preference</li>
+                <li>Professional captain and crew</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="sunset">
+          <img src="/offers-assets/water-activities.jpg" alt="Sunset cruise" />
+          <div class="card-body">
+            <h2>Sunset <span>Cruise</span></h2>
+            <p class="meta">Duration: ~1.5 hours • Private luxury sunset experience</p>
+            <ul class="features">
+              <li>Champagne, wine or cocktail service</li>
+              <li>Golden-hour scenic coastal route</li>
+              <li>Relaxed lounge atmosphere</li>
+              <li>Ideal for proposals and celebrations</li>
+            </ul>
+            <div class="cta-row">
+              <a class="btn" href="#">Book Now</a>
+              <button class="ghost view-details" type="button">View Details ▾</button>
+            </div>
+            <div class="card-details">
+              <p>A romantic and visually stunning cruise during golden hour. Watch the Caribbean sky transform as the sun sets over the horizon.</p>
+              <ul>
+                <li>Champagne, wine or cocktail service</li>
+                <li>Scenic cruise along coastline</li>
+                <li>Relaxed lounge atmosphere</li>
+                <li>Photo opportunities during sunset</li>
+                <li>Optional customization for celebrations</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="dinner">
+          <img src="/offers-assets/charter-dinner.jpg" alt="Romantic dinner cruise" />
+          <div class="card-body">
+            <h2>Romantic Dinner <span>Cruise</span></h2>
+            <p class="meta">Duration: ~3 hours • Private evening dining charter</p>
+            <ul class="features">
+              <li>Private dining setup onboard</li>
+              <li>Gourmet dinner and premium service</li>
+              <li>Wine or champagne options</li>
+              <li>Calm evening route under the stars</li>
+            </ul>
+            <div class="cta-row">
+              <a class="btn" href="#">Book Now</a>
+              <button class="ghost view-details" type="button">View Details ▾</button>
+            </div>
+            <div class="card-details">
+              <p>An elegant evening charter combining fine dining, privacy, and the beauty of the Caribbean at night.</p>
+              <ul>
+                <li>Private dining setup onboard</li>
+                <li>Gourmet dinner experience</li>
+                <li>Wine or champagne service</li>
+                <li>Calm evening cruise under the stars</li>
+                <li>Romantic atmosphere and personalized setup</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="morning-shared">
+          <img src="/offers-assets/charter-catering.jpg" alt="Shared morning social cruise" />
+          <div class="card-body">
+            <h2>Morning Shared <span>Cruise</span></h2>
+            <p class="meta">Duration: up to 4 hours • Shared premium experience</p>
+            <ul class="features">
+              <li>Shared social charter format</li>
+              <li>Swimming and snorkeling opportunities</li>
+              <li>Refreshments onboard</li>
+              <li>Guided scenic cruising route</li>
+            </ul>
+            <div class="cta-row">
+              <a class="btn" href="#">Book Now</a>
+              <button class="ghost view-details" type="button">View Details ▾</button>
+            </div>
+            <div class="card-details">
+              <p>A relaxed social cruise allowing guests to experience the yacht lifestyle in a shared environment.</p>
+              <ul>
+                <li>Shared cruising experience</li>
+                <li>Swimming and snorkeling opportunities</li>
+                <li>Refreshments onboard</li>
+                <li>Relaxed scenic cruising</li>
+                <li>Professional crew and guided route</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="lower">
+        <div class="panel">
+          <h3>What's <span>Included</span></h3>
+          <div class="two-col">
+            <div>Premium Open Bar</div>
+            <div>Route & Stops</div>
+            <div>Gourmet Dining</div>
+            <div>Add-ons Available</div>
+            <div>Water Activities</div>
+            <div>Crew & Safety</div>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+            <a class="btn" href="#">Message Us on WhatsApp</a>
+            <a class="ghost" href="#">Ask a Question</a>
+          </div>
+        </div>
+
+        <div class="panel">
+          <table>
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Full Day</th>
+                <th>Half Day</th>
+                <th>Sunset</th>
+                <th>Dinner</th>
+                <th>Morning Shared</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Private Experience</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+              <tr><td>Gourmet Dining</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td>—</td></tr>
+              <tr><td>Open Bar</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+              <tr><td>Water Toys</td><td class="yes">✓</td><td class="yes">✓</td><td>—</td><td>—</td><td class="yes">✓</td></tr>
+              <tr><td>Starlink Wi‑Fi</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <a class="back" href="/">Back to One-Page Website</a>
+    </main>
+
+    <script>
+      const cards = document.querySelectorAll('.card');
+      const detailButtons = document.querySelectorAll('.view-details');
+
+      detailButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const card = button.closest('.card');
+          const isOpen = card.classList.contains('expanded');
+
+          cards.forEach((c) => c.classList.remove('expanded'));
+          detailButtons.forEach((b) => {
+            b.textContent = 'View Details ▾';
+          });
+
+          if (!isOpen) {
+            card.classList.add('expanded');
+            button.textContent = 'Hide Details ▴';
+            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
