@@ -47,6 +47,18 @@ const GALLERY_ITEMS = [
 const PHOTO_DISPLAY_MS = 7000;
 const VIDEO_TO_PHOTO_DELAY_MS = 1000; // Delay after video ends before showing next photo
 const CROSSFADE_MS = 900;
+const FULL_DAY_CALENDLY_URL = 'https://calendly.com/tajcreates1/full-day-private-charter';
+
+function openFullDayBooking() {
+  if (!window.Calendly) {
+    console.error('Calendly not loaded yet');
+    return;
+  }
+
+  window.Calendly.initPopupWidget({
+    url: FULL_DAY_CALENDLY_URL,
+  });
+}
 
 // Top header with brand, socials, and mobile menu.
 function Header() {
@@ -297,9 +309,9 @@ function Hero() {
             Step aboard a private yacht and experience Sint Maarten like never before.
           </p>
 
-          <button className="mt-8 sm:mt-12 lg:mt-16 w-full sm:w-auto rounded-full bg-white px-7 sm:px-10 py-2.5 text-base sm:text-xl sm:py-5 [@media_(width:1024px)_and_(height:1366px)]:px-20 [@media_(width:1024px)_and_(height:1366px)]:py-7 [@media_(width:1024px)_and_(height:1366px)]:text-2xl font-bold text-[#0f3360] hover:bg-[#0f3360] hover:text-[#eec07b] hover:py-5 hover:px-12 transition-all duration-200" style={{ fontFamily: 'Arial Black' }}>
+          <a href="/offer-page.html" className="mt-8 sm:mt-12 lg:mt-16 inline-flex w-full sm:w-auto items-center justify-center rounded-full bg-white px-7 sm:px-10 py-2.5 text-base sm:text-xl sm:py-5 [@media_(width:1024px)_and_(height:1366px)]:px-20 [@media_(width:1024px)_and_(height:1366px)]:py-7 [@media_(width:1024px)_and_(height:1366px)]:text-2xl font-bold text-[#0f3360] hover:bg-[#0f3360] hover:text-[#eec07b] hover:py-5 hover:px-12 transition-all duration-200" style={{ fontFamily: 'Arial Black' }}>
             Reserve Your Experience
-          </button>
+          </a>
         </div>
       </div>
       {/* Social proof badge. */}
@@ -405,6 +417,12 @@ export default function App() {
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
   const activeGalleryItem = GALLERY_ITEMS[activeGalleryIndex];
 
+  useEffect(() => {
+    if (window.Tally?.loadEmbeds) {
+      window.Tally.loadEmbeds();
+    }
+  }, []);
+
   // Gallery navigation handlers.
   const showPreviousGalleryItem = () => {
     setActiveGalleryIndex((prev) => (prev - 1 + GALLERY_ITEMS.length) % GALLERY_ITEMS.length);
@@ -456,7 +474,7 @@ export default function App() {
             </p>
 
             <div className="mt-6 sm:mt-7 flex flex-wrap items-center gap-3 sm:gap-4">
-              <button className="rounded-full bg-[#eec07b] px-6 sm:px-8 py-2.5 sm:py-3 text-base sm:text-lg font-bold text-black transition hover:brightness-105">
+              <button onClick={openFullDayBooking} className="rounded-full bg-[#eec07b] px-6 sm:px-8 py-2.5 sm:py-3 text-base sm:text-lg font-bold text-black transition hover:brightness-105">
                 Reserve Your Experience
               </button>
               <a href="#" className="text-lg sm:text-xl font-semibold text-white/95 underline underline-offset-6 decoration-white/45">
@@ -721,6 +739,25 @@ export default function App() {
               This is your personal Caribbean adventure, full of space, freedom, and carefree relaxation.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* Contact form section */}
+      <section id="contact" className="relative overflow-hidden bg-[#020a14] text-white px-5 sm:px-7 md:px-8 lg:px-10 py-14 sm:py-16">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(238,192,123,0.14),transparent_30%),radial-gradient(circle_at_80%_78%,rgba(16,78,120,0.25),transparent_45%)]" />
+        <div className="relative z-10 mx-auto max-w-7xl rounded-2xl border border-[#eec07b]/30 bg-[#051224]/70 p-4 sm:p-6 md:p-8 backdrop-blur-sm">
+          <p className="text-center text-[#eec07b] tracking-[0.12em] text-sm sm:text-base uppercase">Contact Us</p>
+          <iframe
+            data-tally-src="https://tally.so/embed/81KMQA?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1&formEventsForwarding=1"
+            loading="lazy"
+            width="100%"
+            height="313"
+            frameBorder="0"
+            marginHeight="0"
+            marginWidth="0"
+            title="Contact us"
+            className="mt-4 w-full"
+          />
         </div>
       </section>
 

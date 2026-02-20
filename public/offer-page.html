@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Offers | Floating Adventures</title>
+    <link rel="stylesheet" href="https://assets.calendly.com/assets/external/widget.css" />
+    <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
     <style>
       :root {
         --gold: #eec07b;
@@ -186,6 +188,7 @@
         border-radius: 14px;
         background: rgba(8, 20, 36, 0.72);
         padding: 16px;
+        min-width: 0;
       }
 
       .panel h3 {
@@ -204,6 +207,11 @@
         gap: 8px 16px;
       }
 
+      .two-col div {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+
       .two-col div::before {
         content: "✓";
         color: var(--gold);
@@ -212,6 +220,7 @@
 
       table {
         width: 100%;
+        min-width: 640px;
         border-collapse: collapse;
         color: rgba(255, 255, 255, 0.92);
       }
@@ -259,6 +268,20 @@
         .cards { grid-template-columns: 1fr; }
         .card.expanded { grid-column: span 1; }
         .card h2 { font-size: 1.8rem; }
+        .lower { gap: 10px; }
+        .panel { padding: 14px; }
+        .panel h3 { font-size: 1.7rem; }
+        .two-col { grid-template-columns: 1fr; }
+        th, td {
+          padding: 10px 6px;
+          font-size: 0.86rem;
+          white-space: nowrap;
+        }
+      }
+
+      .panel-table {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
       }
     </style>
   </head>
@@ -283,7 +306,7 @@
               <li>Starlink Wi-Fi and premium onboard comfort</li>
             </ul>
             <div class="cta-row">
-              <a class="btn" href="#">Book Now</a>
+              <a class="btn" href="#" id="full-day-book-now">Book Now</a>
               <button class="ghost view-details" type="button">View Details ▾</button>
             </div>
             <div class="card-details">
@@ -425,13 +448,13 @@
             <div>Water Activities</div>
             <div>Crew & Safety</div>
           </div>
-          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+          <div style="margin-top:50px;display:flex;gap:10px;flex-wrap:wrap">
             <a class="btn" href="#">Message Us on WhatsApp</a>
             <a class="ghost" href="#">Ask a Question</a>
           </div>
         </div>
 
-        <div class="panel">
+        <div class="panel panel-table">
           <table>
             <thead>
               <tr>
@@ -458,8 +481,26 @@
     </main>
 
     <script>
+      const FULL_DAY_CALENDLY_URL = 'https://calendly.com/tajcreates1/full-day-private-charter';
       const cards = document.querySelectorAll('.card');
       const detailButtons = document.querySelectorAll('.view-details');
+      const fullDayBookNowButton = document.querySelector('#full-day-book-now');
+
+      function openFullDayBooking(event) {
+        event.preventDefault();
+        if (!window.Calendly) {
+          console.error('Calendly not loaded yet');
+          return;
+        }
+
+        window.Calendly.initPopupWidget({
+          url: FULL_DAY_CALENDLY_URL
+        });
+      }
+
+      if (fullDayBookNowButton) {
+        fullDayBookNowButton.addEventListener('click', openFullDayBooking);
+      }
 
       detailButtons.forEach((button) => {
         button.addEventListener('click', () => {
