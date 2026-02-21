@@ -1,4 +1,4 @@
-import introHero from './assets/intro-hero.mp4';
+import introHero from './assets/Intro-hero.mp4';
 import charterCateringHero from './assets/charter-catering.jpg';
 import charterDinnerHero from './assets/charter-dinner.jpg';
 import waterActivitiesHero from './assets/water-activities.jpg';
