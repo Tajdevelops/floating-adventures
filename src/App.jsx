@@ -692,7 +692,17 @@ export default function App() {
 
             <div className="grid gap-3 sm:gap-4 grid-rows-[1.1fr_0.9fr]">
               <div className="overflow-hidden rounded-2xl border border-white/20 bg-black/25">
-                <img src={offersBackgroundImage} alt="Yacht cruising in Sint Maarten at sunset" className="h-full w-full object-cover" />
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!4v1767724347148!6m8!1m7!1sCAoSHENJQUJJaEFkRktUeXBrRlhRUmtUZFdoY3VDQ2I.!2m2!1d18.02028340816918!2d-63.0433419097216!3f191.79479911345362!4f-11.295208891181417!5f0.7820865974627469"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Floating Adventures Marina View"
+                  className="h-full w-full"
+                />
               </div>
 
               <div className="rounded-2xl border border-white/20 bg-[#061426]/80 p-4 sm:p-5">
